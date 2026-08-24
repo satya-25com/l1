@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You ❤️</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E❤️%3C/text%3E%3C/svg%3E" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .gratitude-wrap {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      padding: var(--sp-7) var(--sp-4);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .grat-hero {
+      text-align: center;
+      margin-bottom: var(--sp-7);
+    }
+    .grat-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeInUp 1.5s var(--ease-cinematic) 0.3s forwards;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--sp-4);
+      perspective: 1200px;
+    }
+
+    .tilt-card {
+      position: relative;
+      padding: var(--sp-5) var(--sp-4);
+      border-radius: 20px;
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out, box-shadow var(--t-med);
+      cursor: default;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .tilt-card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .tilt-card .card-inner {
+      transform: translateZ(40px);
+      text-align: center;
+    }
+    .tilt-card .card-icon {
+      font-size: 48px;
+      margin-bottom: var(--sp-3);
+      display: block;
+      filter: drop-shadow(0 0 15px rgba(212,175,55,0.3));
+    }
+    .tilt-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: var(--gold-light);
+      margin-bottom: var(--sp-2);
+    }
+    .tilt-card p {
+      font-family: var(--font-body);
+      font-size: 1.15rem;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    /* Heart surprise */
+    .heart-surprise {
+      text-align: center;
+      margin-top: var(--sp-8);
+      padding: var(--sp-7) var(--sp-4);
+      position: relative;
+      transition: background var(--t-epic) var(--ease-cinematic);
+    }
+    .heart-surprise.revealed {
+      background: radial-gradient(circle at center, rgba(107,29,46,0.3), transparent 70%);
+    }
+    .tap-heart {
+      font-size: 80px;
+      display: inline-block;
+      cursor: pointer;
+      transition: transform var(--t-slow) var(--ease-cinematic), filter var(--t-slow);
+      filter: drop-shadow(0 0 20px rgba(240,182,194,0.5));
+      user-select: none;
+    }
+    .tap-heart:hover {
+      transform: scale(1.15);
+      filter: drop-shadow(0 0 40px rgba(240,182,194,0.8));
+    }
+    .tap-heart.pulse {
+      animation: heartPulse 1s ease-in-out infinite;
+    }
+    .tap-label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-top: var(--sp-3);
+    }
+    .hidden-msg {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: var(--cream);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all var(--t-epic) var(--ease-cinematic);
+      margin-top: var(--sp-5);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.4;
+    }
+    .hidden-msg.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .nav-bottom {
+      text-align: center;
+      margin-top: var(--sp-7);
+    }
+
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <button class="music-btn" aria-label="Play music" type="button">🎵</button>
+
+  <main class="gratitude-wrap">
+    <div class="grat-hero">
+      <h1>Things I Want To Thank You For ❤️</h1>
+    </div>
+
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <section class="heart-surprise" id="heartSurprise">
+      <div class="tap-heart" id="tapHeart" role="button" tabindex="0" aria-label="Tap my heart">❤️</div>
+      <span class="tap-label">Tap My Heart ❤️</span>
+      <p class="hidden-msg" id="hiddenMsg">You are loved more than you know.</p>
+    </section>
+
+    <div class="nav-bottom">
+      <button class="btn-cinema" onclick="pageTransition('final.html')" type="button"><span>To My Final Words →</span></button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    initCommon();
+
+    const cards = [
+      { icon: "🫂", title: "My Supporter", text: "Thank you for always believing in me." },
+      { icon: "😊", title: "My Happiness", text: "Thank you for bringing so much happiness into my life." },
+      { icon: "👑", title: "My Princess", text: "You will always have the most special place in my heart." },
+      { icon: "🍲", title: "My Chef", text: "Thank you for every delicious meal and every little effort." },
+      { icon: "🌸", title: "My Peace", text: "Thank you for being my safe place." },
+      { icon: "🌎", title: "My World", text: "You make my world better simply by being in it." }
+    ];
+
+    const grid = document.getElementById('cardsGrid');
+    cards.forEach((c, i) => {
+      const el = document.createElement('div');
+      el.className = 'tilt-card glass reveal';
+      el.setAttribute('role', 'article');
+      el.setAttribute('aria-label', c.title);
+      el.innerHTML = `
+        <div class="card-inner">
+          <span class="card-icon" aria-hidden="true">${c.icon}</span>
+          <h3>${c.title} ${c.icon}</h3>
+          <p>${c.text}</p>
+        </div>
+      `;
+      grid.appendChild(el);
+
+      // 3D tilt
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rx = ((y - cy) / cy) * -10;
+        const ry = ((x - cx) / cx) * 10;
+        el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(0)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+
+    initScrollReveal();
+
+    // Heart surprise
+    const tapHeart = document.getElementById('tapHeart');
+    const hiddenMsg = document.getElementById('hiddenMsg');
+    const surprise = document.getElementById('heartSurprise');
+    let revealed = false;
+
+    function revealHeart() {
+      if (revealed) return;
+      revealed = true;
+      tapHeart.classList.add('pulse');
+      const rect = tapHeart.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      explodeParticles(x, y, 50, ['#f0b6c2', '#d4af37', '#f5ecd9', '#f0d98a']);
+      spawnPetals(25);
+      surprise.classList.add('revealed');
+      setTimeout(() => {
+        tapHeart.style.transform = 'scale(1.5)';
+        tapHeart.style.filter = 'drop-shadow(0 0 60px rgba(240,182,194,1))';
+        hiddenMsg.classList.add('show');
+      }, 600);
+    }
+
+    tapHeart.addEventListener('click', revealHeart);
+    tapHeart.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealHeart(); } });
+  </script>
+</body>
+</html>

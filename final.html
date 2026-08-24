@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Love ❤️</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E❤️%3C/text%3E%3C/svg%3E" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .final-wrap {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-5) var(--sp-4);
+      text-align: center;
+    }
+
+    /* Phase 1: photo reveal */
+    .phase-photo {
+      position: relative;
+      opacity: 0;
+      transition: opacity var(--t-epic) var(--ease-cinematic);
+    }
+    .phase-photo.show { opacity: 1; }
+    .phase-photo img {
+      max-width: 320px;
+      width: 70vw;
+      border-radius: 12px;
+      filter: brightness(0.7) sepia(0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      margin: 0 auto;
+    }
+    .titles {
+      margin-top: var(--sp-5);
+    }
+    .titles p {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      color: var(--cream);
+      opacity: 0;
+      margin-bottom: var(--sp-2);
+      transform: translateY(20px);
+      transition: all var(--t-slow) var(--ease-cinematic);
+    }
+    .titles p.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Phase 2: letter */
+    .phase-letter {
+      max-width: 650px;
+      margin: 0 auto;
+      opacity: 0;
+      transition: opacity var(--t-epic) var(--ease-cinematic);
+      display: none;
+    }
+    .phase-letter.show {
+      opacity: 1;
+      display: block;
+    }
+    .phase-letter .letter-intro {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      color: var(--gold-light);
+      margin-bottom: var(--sp-5);
+    }
+    .phase-letter .letter-body p {
+      font-family: var(--font-body);
+      font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+      color: var(--cream);
+      line-height: 1.8;
+      margin-bottom: var(--sp-2);
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all var(--t-slow) var(--ease-cinematic);
+    }
+    .phase-letter .letter-body p.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .phase-letter .letter-body .accent {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+    .phase-letter .letter-body .final-line {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      color: var(--pink);
+      margin-top: var(--sp-4);
+    }
+
+    /* Phase 3: finale */
+    .phase-finale {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--black);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--t-epic) var(--ease-cinematic);
+    }
+    .phase-finale.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .finale-heart {
+      font-size: 40px;
+      opacity: 0;
+      transform: scale(0);
+      transition: all var(--t-epic) var(--ease-cinematic);
+      filter: drop-shadow(0 0 30px rgba(212,175,55,0.8));
+    }
+    .phase-finale.show .finale-heart {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .finale-text {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 6vw, 4rem);
+      color: var(--gold-light);
+      opacity: 0;
+      transition: opacity var(--t-epic) ease;
+      text-align: center;
+      padding: 0 var(--sp-4);
+      line-height: 1.3;
+    }
+    .finale-sub {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      color: var(--pink);
+      opacity: 0;
+      transition: opacity var(--t-epic) ease;
+      margin-top: var(--sp-3);
+    }
+    .finale-fade {
+      opacity: 0;
+      transition: opacity var(--t-epic) ease;
+    }
+    .finale-fade.show { opacity: 1; }
+
+    .restart-btn {
+      position: fixed;
+      bottom: var(--sp-4);
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity var(--t-slow);
+      z-index: 200;
+    }
+    .restart-btn.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <button class="music-btn" aria-label="Play music" type="button">🎵</button>
+
+  <main class="final-wrap" id="finalWrap">
+    <!-- Phase 1: Photo + titles -->
+    <div class="phase-photo" id="phasePhoto">
+      <!-- 👇 Uses photo1.jpg by default. Change index in CONFIG.photos to use her best photo. -->
+      <img id="heroPhoto" src="" alt="My love" />
+      <div class="titles" id="titles">
+        <p>My Love.</p>
+        <p>My Princess.</p>
+        <p>My Partner.</p>
+        <p>My Happiness.</p>
+        <p>My World.</p>
+      </div>
+    </div>
+
+    <!-- Phase 2: Letter -->
+    <div class="phase-letter" id="phaseLetter">
+      <p class="letter-intro">Thank you for everything.</p>
+      <div class="letter-body" id="letterBody">
+        <p>Thank you for loving me.</p>
+        <p>Thank you for supporting me.</p>
+        <p>Thank you for making me happy.</p>
+        <p>Thank you for taking care of me.</p>
+        <p>Thank you for every little thing you do.</p>
+        <p class="accent">You are my partner.<br>My supporter.<br>My princess.<br>My happiness.<br>My peace.<br>My world.</p>
+        <p class="accent">And if I could choose again…</p>
+        <p class="accent">I'd still choose you.</p>
+        <p class="accent">Every single time.</p>
+        <p class="final-line">I love you. ❤️</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Phase 3: Finale -->
+  <div class="phase-finale" id="phaseFinale">
+    <div class="finale-heart" aria-hidden="true">❤️</div>
+    <div class="finale-fade" id="finaleTextWrap">
+      <p class="finale-text" id="finaleText">THANK YOU, MY LOVE ❤️</p>
+      <p class="finale-sub" id="finaleSub">Always you.</p>
+    </div>
+  </div>
+
+  <button class="btn-ghost restart-btn" id="restartBtn" type="button">Replay the Journey</button>
+
+  <script src="script.js"></script>
+  <script>
+    initCommon();
+
+    // Use first photo (change index to use her best photo)
+    document.getElementById('heroPhoto').src = CONFIG.photos[0];
+
+    const phasePhoto = document.getElementById('phasePhoto');
+    const phaseLetter = document.getElementById('phaseLetter');
+    const phaseFinale = document.getElementById('phaseFinale');
+    const titles = document.querySelectorAll('#titles p');
+    const letterLines = document.querySelectorAll('#letterBody p');
+    const finaleTextWrap = document.getElementById('finaleTextWrap');
+    const finaleHeart = document.querySelector('.finale-heart');
+    const restartBtn = document.getElementById('restartBtn');
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const delay = prefersReduced ? 100 : 1400;
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function runSequence() {
+      // Phase 1: Photo fades in
+      await sleep(delay);
+      phasePhoto.classList.add('show');
+
+      // Titles appear one by one
+      for (let p of titles) {
+        await sleep(delay * 0.8);
+        p.classList.add('show');
+      }
+
+      await sleep(delay * 2);
+
+      // Transition to letter
+      phasePhoto.style.transition = `opacity ${delay}ms var(--ease-cinematic)`;
+      phasePhoto.style.opacity = '0';
+      await sleep(delay);
+      phasePhoto.style.display = 'none';
+      phaseLetter.classList.add('show');
+
+      // Letter lines appear one by one
+      for (let p of letterLines) {
+        await sleep(delay * 0.7);
+        p.classList.add('show');
+      }
+
+      await sleep(delay * 3);
+
+      // Phase 3: Finale
+      // Fade letter out
+      phaseLetter.style.transition = `opacity ${delay}ms`;
+      phaseLetter.style.opacity = '0';
+      await sleep(delay);
+
+      // Show finale
+      phaseFinale.classList.add('show');
+      await sleep(delay * 2);
+
+      // Heart expands, particles gather
+      finaleHeart.style.transform = 'scale(2.5)';
+      explodeParticles(window.innerWidth / 2, window.innerHeight / 2, 80, ['#d4af37', '#f0b6c2', '#f5ecd9', '#f0d98a']);
+      spawnPetals(30);
+
+      await sleep(delay * 1.5);
+      finaleTextWrap.classList.add('show');
+
+      await sleep(delay * 4);
+
+      // Fade everything out
+      phaseFinale.style.transition = `opacity ${delay * 2}ms ease`;
+      phaseFinale.style.opacity = '0';
+
+      await sleep(delay * 2);
+      restartBtn.classList.add('show');
+    }
+
+    restartBtn.addEventListener('click', () => {
+      pageTransition('index.html');
+    });
+
+    // Start after a brief moment
+    setTimeout(runSequence, 800);
+  </script>
+</body>
+</html>

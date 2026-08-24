@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Memories ❤️</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E❤️%3C/text%3E%3C/svg%3E" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .memories-wrap {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      padding: var(--sp-7) var(--sp-4);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .mem-hero {
+      text-align: center;
+      margin-bottom: var(--sp-7);
+    }
+    .mem-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeInUp 1.5s var(--ease-cinematic) 0.3s forwards;
+    }
+    .mem-hero p {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      color: var(--gold-light);
+      margin-top: var(--sp-2);
+      opacity: 0;
+      animation: fadeInUp 1.5s var(--ease-cinematic) 0.8s forwards;
+    }
+
+    /* Masonry gallery */
+    .gallery {
+      columns: 3;
+      column-gap: var(--sp-3);
+    }
+    @media (max-width: 900px) { .gallery { columns: 2; } }
+    @media (max-width: 500px) { .gallery { columns: 1; } }
+
+    .polaroid {
+      break-inside: avoid;
+      margin-bottom: var(--sp-3);
+      background: rgba(245, 236, 217, 0.95);
+      padding: var(--sp-2) var(--sp-2) var(--sp-4);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform var(--t-med) var(--ease-cinematic), box-shadow var(--t-med);
+      position: relative;
+      overflow: hidden;
+    }
+    .polaroid:nth-child(3n+1) { transform: rotate(-2deg); }
+    .polaroid:nth-child(3n+2) { transform: rotate(1.5deg); }
+    .polaroid:nth-child(3n+3) { transform: rotate(-1deg); }
+    .polaroid:hover {
+      transform: rotate(0deg) translateY(-8px) scale(1.03);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(212,175,55,0.2);
+      z-index: 10;
+    }
+    .polaroid img {
+      width: 100%;
+      border-radius: 2px;
+      filter: sepia(0.1) contrast(1.05);
+      transition: filter var(--t-med);
+    }
+    .polaroid:hover img { filter: sepia(0) contrast(1.1); }
+    .polaroid .caption {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--wine);
+      text-align: center;
+      margin-top: var(--sp-2);
+    }
+
+    /* Memory text section */
+    .memory-text {
+      text-align: center;
+      margin: var(--sp-8) auto;
+      max-width: 700px;
+    }
+    .memory-text p {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 3.5vw, 2rem);
+      color: var(--cream);
+      margin-bottom: var(--sp-3);
+      line-height: 1.4;
+    }
+    .memory-text p:nth-child(1) { opacity: 0; animation: fadeInUp 1.5s var(--ease-cinematic) 0.3s forwards; }
+    .memory-text p:nth-child(2) { opacity: 0; animation: fadeInUp 1.5s var(--ease-cinematic) 0.8s forwards; }
+    .memory-text p:nth-child(3) { opacity: 0; animation: fadeInUp 1.5s var(--ease-cinematic) 1.3s forwards; }
+
+    .nav-bottom {
+      text-align: center;
+      margin-top: var(--sp-7);
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(5,5,5,0.92);
+      backdrop-filter: blur(20px);
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-content {
+      max-width: 85vw;
+      max-height: 80vh;
+      text-align: center;
+      position: relative;
+    }
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      object-fit: contain;
+    }
+    .lightbox-meta {
+      margin-top: var(--sp-3);
+      color: var(--cream);
+    }
+    .lightbox-meta .date {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .lightbox-meta .cap {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      margin-top: var(--sp-1);
+    }
+    .lightbox-meta .msg {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--cream-dim);
+      margin-top: var(--sp-1);
+    }
+    .lb-btn {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(5,5,5,0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212,175,55,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--cream);
+      transition: all var(--t-fast);
+      z-index: 1;
+    }
+    .lb-btn:hover { border-color: var(--gold); color: var(--gold-light); transform: scale(1.1); }
+    .lb-close { top: 24px; right: 24px; }
+    .lb-prev { left: 24px; top: 50%; transform: translateY(-50%); }
+    .lb-next { right: 24px; top: 50%; transform: translateY(-50%); }
+    .lb-prev:hover { transform: translateY(-50%) scale(1.1); }
+    .lb-next:hover { transform: translateY(-50%) scale(1.1); }
+
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <button class="music-btn" aria-label="Play music" type="button">🎵</button>
+
+  <main class="memories-wrap">
+    <div class="mem-hero">
+      <h1>Our Memories ❤️</h1>
+      <p>Little moments. Big feelings.</p>
+    </div>
+
+    <div class="gallery" id="gallery" role="list" aria-label="Photo gallery"></div>
+
+    <div class="memory-text">
+      <p>Some memories become stories.</p>
+      <p>Some become feelings.</p>
+      <p>And some become a permanent part of your heart.</p>
+    </div>
+
+    <div class="nav-bottom">
+      <button class="btn-cinema" onclick="pageTransition('gratitude.html')" type="button"><span>Continue →</span></button>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lb-btn lb-close" id="lbClose" aria-label="Close" type="button"><i class="bi bi-x-lg"></i></button>
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous" type="button"><i class="bi bi-chevron-left"></i></button>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Next" type="button"><i class="bi bi-chevron-right"></i></button>
+    <div class="lightbox-content">
+      <img id="lbImg" src="" alt="" />
+      <div class="lightbox-meta" id="lbMeta"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    initCommon();
+
+    const gallery = document.getElementById('gallery');
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbMeta = document.getElementById('lbMeta');
+    let currentIdx = 0;
+
+    // Build gallery
+    CONFIG.photos.forEach((src, i) => {
+      const meta = CONFIG.photoMeta[i] || {};
+      const card = document.createElement('div');
+      card.className = 'polaroid reveal';
+      card.setAttribute('role', 'listitem');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `Photo ${i + 1}`);
+      card.innerHTML = `
+        <img src="${src}" alt="${meta.caption || 'A precious memory'}" loading="lazy" />
+        ${meta.caption ? `<div class="caption">${meta.caption}</div>` : ''}
+      `;
+      card.addEventListener('click', () => openLightbox(i));
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter') openLightbox(i); });
+      gallery.appendChild(card);
+    });
+
+    initScrollReveal();
+
+    function openLightbox(idx) {
+      currentIdx = idx;
+      updateLightbox();
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function updateLightbox() {
+      const src = CONFIG.photos[currentIdx];
+      const meta = CONFIG.photoMeta[currentIdx] || {};
+      lbImg.src = src;
+      lbImg.alt = meta.caption || 'A precious memory';
+      lbMeta.innerHTML = `
+        ${meta.date ? `<div class="date">${meta.date}</div>` : ''}
+        ${meta.caption ? `<div class="cap">${meta.caption}</div>` : ''}
+        ${meta.message ? `<div class="msg">${meta.message}</div>` : ''}
+      `;
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lbClose').addEventListener('click', closeLightbox);
+    document.getElementById('lbPrev').addEventListener('click', () => {
+      currentIdx = (currentIdx - 1 + CONFIG.photos.length) % CONFIG.photos.length;
+      updateLightbox();
+    });
+    document.getElementById('lbNext').addEventListener('click', () => {
+      currentIdx = (currentIdx + 1) % CONFIG.photos.length;
+      updateLightbox();
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') document.getElementById('lbPrev').click();
+      if (e.key === 'ArrowRight') document.getElementById('lbNext').click();
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    lightbox.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    lightbox.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) {
+        if (dx > 0) document.getElementById('lbPrev').click();
+        else document.getElementById('lbNext').click();
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
